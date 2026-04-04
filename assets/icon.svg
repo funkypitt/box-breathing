@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0a0a1a"/>
+      <stop offset="0%" stop-color="#0e0e24"/>
       <stop offset="100%" stop-color="#1a0a2e"/>
     </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="8" result="blur"/>
+    <filter id="squareglow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <filter id="dotglow">
-      <feGaussianBlur stdDeviation="12" result="blur"/>
+    <filter id="dotglow" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -20,9 +20,11 @@
     </filter>
   </defs>
   <!-- Background -->
-  <rect width="1024" height="1024" rx="200" fill="url(#bg)"/>
-  <!-- Square -->
-  <rect x="262" y="262" width="500" height="500" rx="24" fill="none" stroke="#9b7fd4" stroke-width="6" stroke-opacity="0.7" filter="url(#glow)"/>
-  <!-- Dot at top-left corner area -->
-  <circle cx="262" cy="262" r="24" fill="#c4a0e8" filter="url(#dotglow)"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <!-- Square border -->
+  <rect x="252" y="252" width="520" height="520" rx="28"
+        fill="none" stroke="#9b7fd4" stroke-width="5" opacity="0.7"
+        filter="url(#squareglow)"/>
+  <!-- Dot at top-left corner -->
+  <circle cx="252" cy="252" r="22" fill="#c4a0e8" filter="url(#dotglow)"/>
 </svg>

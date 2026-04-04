@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useKeepAwake } from 'expo-keep-awake';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -76,6 +77,7 @@ function easeInOutSin(t: number): number {
 }
 
 export default function BreathingScreen() {
+  useKeepAwake();
   const router = useRouter();
   const startTime = useRef(Date.now());
   const rafRef = useRef<number | null>(null);
