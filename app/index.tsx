@@ -42,7 +42,7 @@ export default function StartScreen() {
       style={styles.gradient}
     >
       <Animated.View style={[styles.container, fadeStyle]}>
-        <Text style={styles.title}>Box Breathing</Text>
+        <Text style={styles.title}>Box Breathing 4min</Text>
         <View style={styles.buttonContainer}>
           <PulsingButton onPress={handlePress} />
         </View>

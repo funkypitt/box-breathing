@@ -1,17 +1,17 @@
-# Box Breathing — App Store Deployment Guide
+# Box Breathing 4min — App Store Deployment Guide
 
 ## 1. Store Listings
 
 ### Google Play Store
 
-**App name:** Box Breathing
+**App name:** Box Breathing 4min
 
 **Short description (80 chars max):**
 > Minimalist 4-minute guided box breathing exercise. No ads, no tracking.
 
 **Full description:**
 ```
-Box Breathing is a free, open-source breathing exercise app designed to help you
+Box Breathing 4min is a free, open-source breathing exercise app designed to help you
 relax in just 4 minutes.
 
 Follow the glowing dot around a square: breathe in, hold, breathe out, hold.
@@ -41,7 +41,7 @@ Open source: https://github.com/funkypitt/box-breathing
 
 ### Apple App Store
 
-**App name:** Box Breathing
+**App name:** Box Breathing 4min
 
 **Subtitle (30 chars max):**
 > Guided 4-minute calm exercise
@@ -51,7 +51,7 @@ Open source: https://github.com/funkypitt/box-breathing
 
 **Description:**
 ```
-Box Breathing is a free, open-source breathing exercise app designed to help you relax in just 4 minutes.
+Box Breathing 4min is a free, open-source breathing exercise app designed to help you relax in just 4 minutes.
 
 Follow the glowing dot around a square: breathe in, hold, breathe out, hold. The session starts with a gentle 3-second rhythm and naturally transitions to 4 seconds halfway through, guiding you into deeper calm.
 
@@ -111,7 +111,7 @@ Already generated in `assets/`:
 ### Google Play Feature Graphic
 
 Required: 1024×500 PNG or JPG.
-Create a simple graphic with the dark gradient background, the square+dot icon centered, and "Box Breathing" text.
+Create a simple graphic with the dark gradient background, the square+dot icon centered, and "Box Breathing 4min" text.
 
 ---
 
@@ -251,7 +251,7 @@ git push
 ### Step 2 — Google Play Console setup
 
 1. Go to https://play.google.com/console
-2. **Create app** → name: "Box Breathing", free, Health & Fitness
+2. **Create app** → name: "Box Breathing 4min", free, Health & Fitness
 3. Fill in the store listing (descriptions above), upload screenshots and icon
 4. **Setup → API access** → ensure service account `codemagic-publish@enpleineconscience.iam.gserviceaccount.com` has access
 5. **Content rating** → fill questionnaire (no violence, no ads, etc.)
@@ -261,7 +261,7 @@ git push
 ### Step 3 — App Store Connect setup
 
 1. Go to https://appstoreconnect.apple.com
-2. **My Apps → +** → name: "Box Breathing", bundle ID: `com.boxbreathing.app`, SKU: `box-breathing`
+2. **My Apps → +** → name: "Box Breathing 4min", bundle ID: `com.boxbreathing.app`, SKU: `box-breathing`
 3. Fill in the App Information:
    - Subtitle, description, keywords, URLs (see section 1)
    - Category: Health & Fitness
@@ -283,12 +283,12 @@ git push
 ### Step 5 — Review and publish
 
 **Google Play:**
-1. Go to Play Console → Box Breathing → Release → Testing → Open testing
+1. Go to Play Console → Box Breathing 4min → Release → Testing → Open testing
 2. Promote the beta build to Production
 3. Submit for review (usually 1-3 days)
 
 **App Store:**
-1. Go to App Store Connect → Box Breathing → App Store tab
+1. Go to App Store Connect → Box Breathing 4min → App Store tab
 2. Select the TestFlight build for the release
 3. Upload screenshots for required device sizes
 4. Submit for review (usually 1-2 days)
@@ -314,7 +314,7 @@ iOS uses `version` for CFBundleShortVersionString and auto-generates the build n
 
 ## 7. Notes
 
-- **XCODE_SCHEME**: After `expo prebuild`, the iOS scheme name is derived from the `name` field in `app.json`. With `"name": "Box Breathing"`, the scheme will be `Box Breathing`. If this causes issues with spaces, rename it to `BoxBreathing` in `app.json` for the iOS build. Adjust `XCODE_SCHEME` in the YAML accordingly.
+- **XCODE_SCHEME**: After `expo prebuild`, the iOS scheme name is derived from the `name` field in `app.json`. With `"name": "Box Breathing 4min"`, the scheme will be `Box Breathing 4min`. If this causes issues with spaces, rename it to `BoxBreathing4min` in `app.json` for the iOS build. Adjust `XCODE_SCHEME` in the YAML accordingly.
 - **Gradle version**: If the build fails with a Gradle/JVM error (like Antithèse had with SDK 55), pin Gradle to a stable version by adding a step before the build:
   ```bash
   sed -i 's|gradle-.*-bin\.zip|gradle-8.13-bin.zip|' \

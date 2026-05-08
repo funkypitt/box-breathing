@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Box Breathing 4min</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 0 1.25rem;
+    line-height: 1.55;
+    color: #222;
+  }
+  h1, h2 { line-height: 1.25; }
+  h1 { margin-bottom: 0.25rem; }
+  h2 { margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: 0.25rem; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  pre { background: #f6f6f6; padding: 0.75rem 1rem; overflow-x: auto; border-radius: 4px; }
+  ul { padding-left: 1.25rem; }
+  a { color: #2a5db0; }
+</style>
+</head>
+<body>
+
+<h1>Box Breathing 4min</h1>
+<p><em>Minimalist 4-minute guided box breathing exercise.</em></p>
+
+<h2>Overview</h2>
+<p>
+  Box Breathing 4min is a calm, distraction-free breathing exercise app. Follow the glowing dot
+  around a square: breathe in, hold, breathe out, hold. The 4-minute session starts at a 3-second
+  rhythm and gently transitions to 4 seconds halfway through, easing you into deeper calm. No
+  accounts, no ads, no tracking, no internet required.
+</p>
+
+<h2>Features</h2>
+<ul>
+  <li>Single-screen, distraction-free interface</li>
+  <li>Animated 60fps guide tracing the square</li>
+  <li>Progressive rhythm: 3s phase ramping to 4s</li>
+  <li>Bilingual prompts (English / French)</li>
+  <li>Screen stays awake during the session</li>
+  <li>Works fully offline; no permissions, no telemetry</li>
+</ul>
+
+<h2>Screenshots</h2>
+<p>No <code>screenshots/</code> folder is shipped with the source. Run the app to see the start
+screen, breathing screen, and end screen.</p>
+
+<h2>Build &amp; install</h2>
+<p>The project is an Expo / React Native app (managed workflow).</p>
+<pre>npm install
+npx expo prebuild --platform android --clean
+cd android &amp;&amp; ./gradlew bundleRelease
+</pre>
+<p>For iOS, see <code>DEPLOY.md</code> for the full Codemagic pipeline (App Store Connect + TestFlight).</p>
+
+<h2>License</h2>
+<p>Released under <strong>GPL-3.0-only</strong>, matching the F-Droid metadata for
+<code>com.boxbreathing.app</code>. No <code>LICENSE</code> file is bundled in the source tree;
+the canonical SPDX identifier is recorded at
+<code>fdroid-repo/metadata/com.boxbreathing.app.yml</code>.</p>
+
+</body>
+</html>

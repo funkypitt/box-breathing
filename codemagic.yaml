@@ -60,7 +60,7 @@ workflows:
         distribution_type: app_store
         bundle_identifier: com.boxbreathing.app
       vars:
-        XCODE_SCHEME: "Box Breathing"
+        XCODE_SCHEME: "Box Breathing 4min"
       node: 18
       xcode: latest
       cocoapods: default
