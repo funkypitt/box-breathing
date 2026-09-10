@@ -47,6 +47,7 @@ export default function StartScreen() {
           <PulsingButton onPress={handlePress} />
         </View>
         <Text style={styles.hint}>Tap to begin / Appuyer pour commencer</Text>
+        <Text style={styles.credits}>Pierre Gallaz · developed with Claude Code</Text>
       </Animated.View>
     </LinearGradient>
   );
@@ -74,6 +75,14 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     opacity: 0.4,
     fontSize: 14,
+    fontWeight: '300',
+  },
+  credits: {
+    position: 'absolute',
+    bottom: 24,
+    color: COLORS.text,
+    opacity: 0.25,
+    fontSize: 11,
     fontWeight: '300',
   },
 });
