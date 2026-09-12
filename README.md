@@ -14,6 +14,10 @@ npx expo prebuild --platform android --clean
 cd android && ./gradlew assembleRelease
 ```
 
+`prebuild --clean` regenerates `android/` and therefore **discards the build
+settings that keep the APK at 25 MB** — reapply them from the *Compilation*
+section below before running `assembleRelease`.
+
 For iOS, see `DEPLOY.md` for the Codemagic pipeline.
 
 ## Install
