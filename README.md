@@ -1,3 +1,5 @@
+![Box Breathing 4min](docs/banner.png)
+
 # Box Breathing 4min
 
 **FR** — Appli de respiration carrée calme et sans distraction. Suivez le point lumineux autour d'un carré : inspirez, retenez, expirez, retenez. La séance de 4 minutes commence sur un rythme de 3 secondes et passe doucement à 4 secondes à mi-parcours. Instructions bilingues (français / anglais), écran maintenu allumé, aucun compte, aucune pub, aucun pistage, aucune connexion requise.
