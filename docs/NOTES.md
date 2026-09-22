@@ -1,4 +1,4 @@
-# Box Breathing 4min — notes
+# 4 Minutes Breathing — notes
 
 ## Compilation
 

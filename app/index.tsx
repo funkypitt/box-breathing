@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -10,11 +10,15 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import PulsingButton from '../components/PulsingButton';
-import { COLORS } from '../constants/breathing';
+import ShapeIcon from '../components/ShapeIcon';
+import { COLORS, TECHNIQUES, DEFAULT_TECHNIQUE } from '../constants/breathing';
+
+const ICON_SIZE = 52;
 
 export default function StartScreen() {
   const router = useRouter();
   const screenOpacity = useSharedValue(1);
+  const [technique, setTechnique] = useState(DEFAULT_TECHNIQUE);
 
   const handlePress = () => {
     screenOpacity.value = withTiming(
@@ -29,7 +33,7 @@ export default function StartScreen() {
   };
 
   const navigate = () => {
-    router.replace('/breathing');
+    router.replace({ pathname: '/breathing', params: { technique: technique.id } });
   };
 
   const fadeStyle = useAnimatedStyle(() => ({
@@ -42,7 +46,33 @@ export default function StartScreen() {
       style={styles.gradient}
     >
       <Animated.View style={[styles.container, fadeStyle]}>
-        <Text style={styles.title}>Box Breathing 4min</Text>
+        <Text style={styles.title}>4 Minutes Breathing</Text>
+
+        {/* Pick a shape: each one is a technique */}
+        <View style={styles.shapeRow}>
+          {TECHNIQUES.map((t) => (
+            <Pressable
+              key={t.id}
+              onPress={() => setTechnique(t)}
+              style={styles.shapeCell}
+              accessibilityLabel={`${t.name.en} ${t.rhythm}`}
+            >
+              <ShapeIcon technique={t} size={ICON_SIZE} selected={t.id === technique.id} />
+              <Text style={[styles.rhythm, t.id === technique.id && styles.rhythmSelected]}>
+                {t.rhythm.replace(/ /g, '')}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+
+        <View style={styles.chosen}>
+          <Text style={styles.nameEn}>{technique.name.en}</Text>
+          <Text style={styles.nameFr}>{technique.name.fr}</Text>
+          <Text style={styles.note}>
+            {technique.note.en} · {technique.note.fr}
+          </Text>
+        </View>
+
         <View style={styles.buttonContainer}>
           <PulsingButton onPress={handlePress} />
         </View>
@@ -61,12 +91,58 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 16,
   },
   title: {
     color: COLORS.text,
-    fontSize: 36,
+    fontSize: 34,
     fontWeight: '200',
-    marginBottom: 80,
+    marginBottom: 44,
+  },
+  shapeRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  shapeCell: {
+    alignItems: 'center',
+    marginHorizontal: 6,
+    paddingVertical: 4,
+  },
+  rhythm: {
+    color: COLORS.text,
+    opacity: 0.3,
+    fontSize: 11,
+    fontWeight: '300',
+    marginTop: 6,
+  },
+  rhythmSelected: {
+    opacity: 0.8,
+  },
+  chosen: {
+    alignItems: 'center',
+    marginTop: 28,
+    marginBottom: 44,
+    minHeight: 76,
+  },
+  nameEn: {
+    color: COLORS.text,
+    fontSize: 22,
+    fontWeight: '300',
+  },
+  nameFr: {
+    color: COLORS.text,
+    opacity: 0.6,
+    fontSize: 16,
+    fontWeight: '300',
+    marginTop: 2,
+  },
+  note: {
+    color: COLORS.text,
+    opacity: 0.4,
+    fontSize: 12,
+    fontWeight: '300',
+    marginTop: 8,
+    textAlign: 'center',
   },
   buttonContainer: {
     marginBottom: 40,

@@ -1,16 +1,22 @@
-![Box Breathing 4min](docs/banner.png)
+![4 Minutes Breathing](docs/banner.png)
 
-# Box Breathing 4min
+# 4 Minutes Breathing
 
-**FR** — Suivez le point autour d'un carré : inspirez, retenez, expirez, retenez. Quatre minutes, d'un rythme de 3 secondes à 4 secondes à mi-parcours. Aucun réglage, aucune série à tenir, aucun compte, aucun pistage.
+**FR** — Choisissez une forme et suivez le point autour d'elle pendant quatre minutes : carré (4-4-4-4), triangle (4-4-4), 4-7-8, pétale (3-3-6), cercle (cohérence cardiaque 5-5). Aucun réglage, aucune série à tenir, aucun compte, aucun pistage.
 
-**EN** — Follow the guide round a square: breathe in, hold, out, hold. Four minutes, from a 3-second rhythm to 4 seconds halfway. No settings, no streaks, no account, no tracking.
+**EN** — Pick a shape and follow the dot round it for four minutes: square (box 4-4-4-4), triangle (4-4-4), 4-7-8, petal (3-3-6), circle (coherent 5-5). No settings, no streaks, no account, no tracking.
+
+Formerly *Box Breathing 4min*; the box is now one of five techniques.
 
 ## Key points
 
-- One button: tap to begin. The session lasts four minutes and returns to the start
-  screen by itself.
-- Halfway, a "Slowing down…" message marks the change from 3 to 4 seconds per side.
+- One screen: pick a shape, tap the button. The session lasts four minutes, ends on a
+  complete breath, and returns to the start screen by itself.
+- The shapes respect the durations: every edge is as long as the breath it stands for
+  (`constants/geometry.ts`). A 3-3-6 triangle would be flat, so the petal's exhale is a
+  circular arc of exactly twice the straight edges.
+- Box breathing keeps its progressive rhythm: 3 seconds per side, then 4 halfway,
+  with a "Slowing down…" message.
 - Prompts are shown in English and French together; there is no language setting.
 - The screen stays on during the session.
 - Nothing is stored and nothing leaves the phone; works offline.
@@ -31,7 +37,7 @@ All three deliver the same file, with the same signature.
 Expo / React Native (managed workflow, expo-router).
 
 ```
-npm install
+npm ci --legacy-peer-deps
 npx expo prebuild --platform android --clean
 cd android && ./gradlew assembleRelease
 ```

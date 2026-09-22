@@ -1,40 +1,39 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-import { COLORS, INSTRUCTIONS } from '../constants/breathing';
+import { COLORS, Phase } from '../constants/breathing';
 
 interface Props {
-  sideIndex: number; // 0-3
-  countdown: number; // seconds remaining in current side
+  phaseIndex: number;
+  phase: Phase;
+  countdown: number; // seconds remaining in the current phase
 }
 
-export default function InstructionLabel({ sideIndex, countdown }: Props) {
+export default function InstructionLabel({ phaseIndex, phase, countdown }: Props) {
   const opacity = useSharedValue(1);
-  const prevSide = useSharedValue(sideIndex);
+  const prevPhase = useSharedValue(phaseIndex);
 
   useEffect(() => {
-    if (prevSide.value !== sideIndex) {
+    if (prevPhase.value !== phaseIndex) {
       opacity.value = 0;
       opacity.value = withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) });
-      prevSide.value = sideIndex;
+      prevPhase.value = phaseIndex;
     }
-  }, [sideIndex]);
+  }, [phaseIndex]);
 
   const animStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
   }));
 
-  const instruction = INSTRUCTIONS[sideIndex];
-
   return (
     <Animated.View style={[styles.container, animStyle]}>
-      <Animated.Text style={styles.en}>{instruction.en}</Animated.Text>
-      <Animated.Text style={styles.fr}>{instruction.fr}</Animated.Text>
+      <Animated.Text style={styles.en}>{phase.en}</Animated.Text>
+      <Animated.Text style={styles.fr}>{phase.fr}</Animated.Text>
       <Animated.Text style={styles.countdown}>{countdown}</Animated.Text>
     </Animated.View>
   );
@@ -44,6 +43,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 24,
   },
   en: {
     color: COLORS.text,

@@ -1,12 +1,13 @@
-Box Breathing 4min est une appli de respiration calme, sans distraction. Suivez le point lumineux autour d'un carré : inspirez, retenez, expirez, retenez. La séance de 4 minutes commence sur un rythme de 3 secondes et passe doucement à 4 secondes à mi-parcours, pour vous emmener vers un calme plus profond.
+4 Minutes Breathing est une appli de respiration calme, sans distraction. Choisissez une forme, appuyez sur le bouton, et suivez le point autour d'elle pendant quatre minutes.
 
-La respiration carrée est une technique utilisée par les sportifs, les thérapeutes et les Navy SEALs pour réduire le stress, améliorer la concentration et apaiser le système nerveux.
+Chaque forme est dessinée d'après sa technique : ses côtés mesurent la durée des souffles qu'ils représentent, si bien que le point avance d'un pas régulier et que le chemin qui reste montre le temps qui reste à respirer.
 
-- Interface mono-écran, sans distraction
-- Animation fluide à 60 ips
-- Rythme progressif (3 s, puis 4 s)
-- Instructions bilingues (anglais / français)
-- L'écran reste allumé pendant l'exercice
-- Aucun compte, aucune pub, aucun pistage, aucune connexion requise
+- Carré : respiration carrée 4-4-4-4, à 3 secondes d'abord, puis 4 à mi-parcours
+- Triangle : 4-4-4, inspirer, retenir, expirer
+- Triangle allongé : la respiration relaxante 4-7-8 du Dr Weil
+- Pétale : 3-3-6, une expiration deux fois plus longue que l'inspiration
+- Cercle : cohérence cardiaque, 5-5, six respirations par minute
+
+Chaque séance dure quatre minutes et se termine sur une respiration complète. Instructions bilingues (anglais / français), l'écran reste allumé, aucun compte, aucune pub, aucun pistage, aucune connexion requise.
 
 Pierre Gallaz · développé avec Claude Code

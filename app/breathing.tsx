@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useKeepAwake } from 'expo-keep-awake';
 import Animated, {
   useSharedValue,
@@ -10,65 +10,25 @@ import Animated, {
   Easing,
   runOnJS,
 } from 'react-native-reanimated';
-import BreathingSquare from '../components/BreathingSquare';
+import BreathingShape from '../components/BreathingShape';
 import Timer from '../components/Timer';
-import {
-  COLORS,
-  TOTAL_DURATION_MS,
-  PHASE_SWITCH_MS,
-  RHYTHM_PHASE1,
-  RHYTHM_PHASE2,
-} from '../constants/breathing';
+import { COLORS, findTechnique, buildSchedule, Schedule } from '../constants/breathing';
 
 // Compute breathing state from elapsed time
-function getBreathingState(elapsedMs: number) {
-  // Phase 1: 0-2min = 3s rhythm, Phase 2: 2-4min = 4s rhythm
-  // At the 2-min mark, we finish the current 3s cycle, then switch to 4s
-  const rhythm1 = RHYTHM_PHASE1;
-  const rhythm2 = RHYTHM_PHASE2;
-  const cycle1 = rhythm1 * 4; // 12s
-  const cycle2 = rhythm2 * 4; // 16s
+function getBreathingState(schedule: Schedule, elapsedMs: number) {
+  const { segments } = schedule;
+  let i = segments.length - 1;
+  while (i > 0 && segments[i].startMs > elapsedMs) i--;
+  const seg = segments[i];
+  const phaseElapsed = Math.min(elapsedMs - seg.startMs, seg.phase.ms);
+  const phaseProgress = easeInOutSin(phaseElapsed / seg.phase.ms);
+  const countdown = Math.max(1, Math.ceil((seg.phase.ms - phaseElapsed) / 1000));
+  const isSlowing =
+    schedule.slowingAtMs !== null &&
+    elapsedMs >= schedule.slowingAtMs &&
+    elapsedMs < schedule.slowingAtMs + 3000;
 
-  let sideIndex: number;
-  let sideProgress: number;
-  let sideDurationMs: number;
-  let cycleProgress: number;
-  let isTransitioning = false;
-
-  if (elapsedMs < PHASE_SWITCH_MS) {
-    // Phase 1: 3-3-3-3
-    const cycleTime = elapsedMs % cycle1;
-    sideIndex = Math.floor(cycleTime / rhythm1) % 4;
-    const sideElapsed = cycleTime - sideIndex * rhythm1;
-    sideDurationMs = rhythm1;
-    // Apply ease-in-out
-    const linear = sideElapsed / rhythm1;
-    sideProgress = easeInOutSin(linear);
-    cycleProgress = cycleTime / cycle1;
-  } else {
-    // Phase 2: 4-4-4-4
-    const phase2Elapsed = elapsedMs - PHASE_SWITCH_MS;
-    const cycleTime = phase2Elapsed % cycle2;
-    sideIndex = Math.floor(cycleTime / rhythm2) % 4;
-    const sideElapsed = cycleTime - sideIndex * rhythm2;
-    sideDurationMs = rhythm2;
-    const linear = sideElapsed / rhythm2;
-    sideProgress = easeInOutSin(linear);
-    cycleProgress = cycleTime / cycle2;
-
-    // Transition indicator: show within first 3 seconds of phase 2
-    if (phase2Elapsed < 3000) {
-      isTransitioning = true;
-    }
-  }
-
-  const sideElapsedRaw =
-    elapsedMs < PHASE_SWITCH_MS
-      ? (elapsedMs % cycle1) - sideIndex * rhythm1
-      : ((elapsedMs - PHASE_SWITCH_MS) % cycle2) - sideIndex * rhythm2;
-  const countdown = Math.ceil((sideDurationMs - sideElapsedRaw) / 1000);
-
-  return { sideIndex, sideProgress, countdown, cycleProgress, isTransitioning };
+  return { phaseIndex: seg.phaseIndex, phase: seg.phase, phaseProgress, countdown, isSlowing };
 }
 
 function easeInOutSin(t: number): number {
@@ -79,6 +39,9 @@ function easeInOutSin(t: number): number {
 export default function BreathingScreen() {
   useKeepAwake();
   const router = useRouter();
+  const params = useLocalSearchParams<{ technique?: string }>();
+  const technique = useMemo(() => findTechnique(params.technique), [params.technique]);
+  const schedule = useMemo(() => buildSchedule(technique), [technique]);
   const startTime = useRef(Date.now());
   const rafRef = useRef<number | null>(null);
 
@@ -86,10 +49,9 @@ export default function BreathingScreen() {
   const [finished, setFinished] = useState(false);
 
   const screenOpacity = useSharedValue(0);
-  const squareOpacity = useSharedValue(1);
+  const shapeOpacity = useSharedValue(1);
   const endTextOpacity = useSharedValue(0);
   const transitionMsgOpacity = useSharedValue(0);
-  const borderFlashValue = useSharedValue(0);
 
   // Fade in on mount
   useEffect(() => {
@@ -103,8 +65,8 @@ export default function BreathingScreen() {
       if (!running) return;
       const now = Date.now();
       const ms = now - startTime.current;
-      if (ms >= TOTAL_DURATION_MS) {
-        setElapsed(TOTAL_DURATION_MS);
+      if (ms >= schedule.totalMs) {
+        setElapsed(schedule.totalMs);
         setFinished(true);
         return;
       }
@@ -116,17 +78,15 @@ export default function BreathingScreen() {
       running = false;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [schedule]);
 
-  // Handle transition message & border flash
-  const prevTransitioning = useRef(false);
-  const state = getBreathingState(elapsed);
+  // Handle the slowing-down message (box breathing only)
+  const prevSlowing = useRef(false);
+  const state = getBreathingState(schedule, elapsed);
 
   useEffect(() => {
-    if (state.isTransitioning && !prevTransitioning.current) {
+    if (state.isSlowing && !prevSlowing.current) {
       transitionMsgOpacity.value = withTiming(1, { duration: 400, easing: Easing.in(Easing.ease) });
-      borderFlashValue.value = 1;
-      borderFlashValue.value = withTiming(0, { duration: 800, easing: Easing.out(Easing.ease) });
       setTimeout(() => {
         transitionMsgOpacity.value = withTiming(0, {
           duration: 600,
@@ -134,8 +94,8 @@ export default function BreathingScreen() {
         });
       }, 2000);
     }
-    prevTransitioning.current = state.isTransitioning;
-  }, [state.isTransitioning]);
+    prevSlowing.current = state.isSlowing;
+  }, [state.isSlowing]);
 
   // Handle finish
   const goHome = useCallback(() => {
@@ -144,8 +104,8 @@ export default function BreathingScreen() {
 
   useEffect(() => {
     if (!finished) return;
-    // Fade out square
-    squareOpacity.value = withTiming(0, { duration: 800, easing: Easing.out(Easing.ease) });
+    // Fade out shape
+    shapeOpacity.value = withTiming(0, { duration: 800, easing: Easing.out(Easing.ease) });
     // Fade in end text
     setTimeout(() => {
       endTextOpacity.value = withTiming(1, { duration: 600, easing: Easing.in(Easing.ease) });
@@ -166,8 +126,8 @@ export default function BreathingScreen() {
     opacity: screenOpacity.value,
   }));
 
-  const squareFadeStyle = useAnimatedStyle(() => ({
-    opacity: squareOpacity.value,
+  const shapeFadeStyle = useAnimatedStyle(() => ({
+    opacity: shapeOpacity.value,
   }));
 
   const endFadeStyle = useAnimatedStyle(() => ({
@@ -186,14 +146,14 @@ export default function BreathingScreen() {
       <Animated.View style={[styles.container, fadeStyle]}>
         <Timer elapsedMs={elapsed} />
 
-        <View style={styles.squareArea}>
-          <Animated.View style={squareFadeStyle}>
-            <BreathingSquare
-              sideProgress={state.sideProgress}
-              sideIndex={state.sideIndex}
+        <View style={styles.shapeArea}>
+          <Animated.View style={shapeFadeStyle}>
+            <BreathingShape
+              technique={technique}
+              phaseIndex={state.phaseIndex}
+              phaseProgress={state.phaseProgress}
+              phase={state.phase}
               countdown={state.countdown}
-              cycleProgress={state.cycleProgress}
-              borderFlash={0}
             />
           </Animated.View>
         </View>
@@ -224,13 +184,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  squareArea: {
+  shapeArea: {
     flex: 1,
     justifyContent: 'center',
   },
   transitionMsg: {
     position: 'absolute',
-    bottom: 120,
+    bottom: 80,
     alignItems: 'center',
   },
   transitionEn: {

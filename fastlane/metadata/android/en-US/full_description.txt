@@ -1,12 +1,13 @@
-Box Breathing 4min is a calm, distraction-free breathing app. Follow the glowing dot around a square: breathe in, hold, breathe out, hold. The 4-minute session opens at a 3-second rhythm and gently transitions to 4 seconds halfway through, easing you into deeper calm.
+4 Minutes Breathing is a calm, distraction-free breathing app. Pick a shape, tap the button, and follow the dot round it for four minutes.
 
-Box breathing (also called square breathing) is a technique used by athletes, therapists, and Navy SEALs to reduce stress, improve focus, and steady the nervous system.
+Each shape is drawn to its technique: its edges are as long as the breaths they stand for, so the dot moves at one steady pace and the distance left to go shows the time left to breathe.
 
-- Single-screen, distraction-free interface
-- Smooth 60fps animated guide
-- Progressive rhythm (3s, then 4s)
-- Bilingual prompts (English / French)
-- Screen stays awake during the exercise
-- No accounts, no ads, no tracking, no internet required
+- Square: box breathing 4-4-4-4, opening at 3 seconds and slowing to 4 halfway
+- Triangle: 4-4-4, breathe in, hold, breathe out
+- Long triangle: Dr Weil's 4-7-8 relaxing breath
+- Petal: 3-3-6, an exhale twice as long as the inhale
+- Circle: coherent breathing, 5-5, six breaths a minute
+
+Every session lasts four minutes and ends on a complete breath. Bilingual prompts (English / French), the screen stays awake, no account, no ads, no tracking, no internet required.
 
 Pierre Gallaz · developed with Claude Code
