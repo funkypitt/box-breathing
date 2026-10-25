@@ -8,6 +8,6 @@ Chaque forme est dessinée d'après sa technique : ses côtés mesurent la duré
 - Pétale : 3-3-6, une expiration deux fois plus longue que l'inspiration
 - Cercle : cohérence cardiaque, 5-5, six respirations par minute
 
-Chaque séance dure quatre minutes et se termine sur une respiration complète. Instructions bilingues (anglais / français), l'écran reste allumé, aucun compte, aucune pub, aucun pistage, aucune connexion requise.
+Chaque séance dure quatre minutes et se termine sur une respiration complète. Une option, éteinte tant qu'elle n'est pas cochée, marque chaque changement de phase d'une note douce de kalimba (plus haute pour inspirer, plus basse pour expirer) et le début et la fin d'une cloche de cristal, pour respirer dans le noir. Instructions bilingues (anglais / français), l'écran reste allumé, aucun compte, aucune pub, aucun pistage, aucune connexion requise.
 
 Pierre Gallaz · développé avec Claude Code

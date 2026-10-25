@@ -8,6 +8,6 @@ Each shape is drawn to its technique: its edges are as long as the breaths they 
 - Petal: 3-3-6, an exhale twice as long as the inhale
 - Circle: coherent breathing, 5-5, six breaths a minute
 
-Every session lasts four minutes and ends on a complete breath. Bilingual prompts (English / French), the screen stays awake, no account, no ads, no tracking, no internet required.
+Every session lasts four minutes and ends on a complete breath. An option, off unless ticked, marks each change of phase with a soft kalimba note (higher to breathe in, lower to breathe out) and the start and the end with a crystal bell, for breathing in the dark. Bilingual prompts (English / French), the screen stays awake, no account, no ads, no tracking, no internet required.
 
 Pierre Gallaz · developed with Claude Code

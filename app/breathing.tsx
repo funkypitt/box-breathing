@@ -13,6 +13,7 @@ import Animated, {
 import BreathingShape from '../components/BreathingShape';
 import Timer from '../components/Timer';
 import { COLORS, findTechnique, buildSchedule, Schedule } from '../constants/breathing';
+import { playCue, prepareSounds } from '../constants/sounds';
 
 // Compute breathing state from elapsed time
 function getBreathingState(schedule: Schedule, elapsedMs: number) {
@@ -28,7 +29,7 @@ function getBreathingState(schedule: Schedule, elapsedMs: number) {
     elapsedMs >= schedule.slowingAtMs &&
     elapsedMs < schedule.slowingAtMs + 3000;
 
-  return { phaseIndex: seg.phaseIndex, phase: seg.phase, phaseProgress, countdown, isSlowing };
+  return { segmentIndex: i, phaseIndex: seg.phaseIndex, phase: seg.phase, phaseProgress, countdown, isSlowing };
 }
 
 function easeInOutSin(t: number): number {
@@ -39,11 +40,13 @@ function easeInOutSin(t: number): number {
 export default function BreathingScreen() {
   useKeepAwake();
   const router = useRouter();
-  const params = useLocalSearchParams<{ technique?: string }>();
+  const params = useLocalSearchParams<{ technique?: string; sounds?: string }>();
   const technique = useMemo(() => findTechnique(params.technique), [params.technique]);
   const schedule = useMemo(() => buildSchedule(technique), [technique]);
+  const sounds = params.sounds === '1';
   const startTime = useRef(Date.now());
   const rafRef = useRef<number | null>(null);
+  const lastSegment = useRef(0);
 
   const [elapsed, setElapsed] = useState(0);
   const [finished, setFinished] = useState(false);
@@ -53,9 +56,10 @@ export default function BreathingScreen() {
   const endTextOpacity = useSharedValue(0);
   const transitionMsgOpacity = useSharedValue(0);
 
-  // Fade in on mount
+  // Fade in on mount; with the sounds on, the bell marks the start
   useEffect(() => {
     screenOpacity.value = withTiming(1, { duration: 800, easing: Easing.in(Easing.ease) });
+    if (sounds) prepareSounds().then(() => playCue('bell'));
   }, []);
 
   // Main animation loop
@@ -68,7 +72,16 @@ export default function BreathingScreen() {
       if (ms >= schedule.totalMs) {
         setElapsed(schedule.totalMs);
         setFinished(true);
+        if (sounds) playCue('bell');
         return;
+      }
+      // a change of phase: one note, higher to breathe in, lower to breathe out
+      if (sounds) {
+        const { segmentIndex, phase } = getBreathingState(schedule, ms);
+        if (segmentIndex !== lastSegment.current) {
+          lastSegment.current = segmentIndex;
+          playCue(phase.kind);
+        }
       }
       setElapsed(ms);
       rafRef.current = requestAnimationFrame(tick);

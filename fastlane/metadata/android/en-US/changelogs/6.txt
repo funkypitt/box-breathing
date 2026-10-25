@@ -1,0 +1,1 @@
+An option on the home screen: a soft kalimba note at each change of phase (higher to breathe in, lower to breathe out) and a crystal bell at the start and the end, for breathing with the eyes closed. Off unless ticked.

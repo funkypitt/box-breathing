@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -12,6 +12,8 @@ import Animated, {
 import PulsingButton from '../components/PulsingButton';
 import ShapeIcon from '../components/ShapeIcon';
 import { COLORS, TECHNIQUES, DEFAULT_TECHNIQUE } from '../constants/breathing';
+import { loadSounds, saveSounds } from '../constants/settings';
+import { playCue, prepareSounds } from '../constants/sounds';
 
 const ICON_SIZE = 52;
 
@@ -19,6 +21,22 @@ export default function StartScreen() {
   const router = useRouter();
   const screenOpacity = useSharedValue(1);
   const [technique, setTechnique] = useState(DEFAULT_TECHNIQUE);
+  const [sounds, setSounds] = useState(false);
+
+  useEffect(() => {
+    loadSounds().then((on) => {
+      setSounds(on);
+      if (on) prepareSounds();
+    });
+  }, []);
+
+  // The tick plays its own note once, so the volume can be judged before starting.
+  const toggleSounds = () => {
+    const on = !sounds;
+    setSounds(on);
+    saveSounds(on);
+    if (on) playCue('hold');
+  };
 
   const handlePress = () => {
     screenOpacity.value = withTiming(
@@ -33,7 +51,7 @@ export default function StartScreen() {
   };
 
   const navigate = () => {
-    router.replace({ pathname: '/breathing', params: { technique: technique.id } });
+    router.replace({ pathname: '/breathing', params: { technique: technique.id, sounds: sounds ? '1' : '0' } });
   };
 
   const fadeStyle = useAnimatedStyle(() => ({
@@ -77,6 +95,22 @@ export default function StartScreen() {
           <PulsingButton onPress={handlePress} />
         </View>
         <Text style={styles.hint}>Tap to begin / Appuyer pour commencer</Text>
+
+        {/* One option: a soft note at each change of phase, for breathing in the dark */}
+        <Pressable
+          onPress={toggleSounds}
+          style={styles.tickRow}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: sounds }}
+          accessibilityLabel="Sound at each phase / Son à chaque phase"
+        >
+          <View style={[styles.tickBox, sounds && styles.tickBoxOn]}>
+            {sounds && <Text style={styles.tickMark}>✓</Text>}
+          </View>
+          <Text style={[styles.tickLabel, sounds && styles.tickLabelOn]}>
+            Sound at each phase · Son à chaque phase
+          </Text>
+        </Pressable>
         <Text style={styles.credits}>Pierre Gallaz · developed with Claude Code</Text>
       </Animated.View>
     </LinearGradient>
@@ -152,6 +186,43 @@ const styles = StyleSheet.create({
     opacity: 0.4,
     fontSize: 14,
     fontWeight: '300',
+  },
+  tickRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 22,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  tickBox: {
+    width: 18,
+    height: 18,
+    borderRadius: 4,
+    borderWidth: 1.5,
+    borderColor: COLORS.borderPurple,
+    opacity: 0.6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  tickBoxOn: {
+    opacity: 1,
+    backgroundColor: COLORS.purple,
+  },
+  tickMark: {
+    color: COLORS.text,
+    fontSize: 13,
+    lineHeight: 15,
+    fontWeight: '600',
+  },
+  tickLabel: {
+    color: COLORS.text,
+    opacity: 0.4,
+    fontSize: 13,
+    fontWeight: '300',
+  },
+  tickLabelOn: {
+    opacity: 0.8,
   },
   credits: {
     position: 'absolute',

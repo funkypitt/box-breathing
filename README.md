@@ -19,7 +19,10 @@ Formerly *Box Breathing 4min*; the box is now one of five techniques.
   with a "Slowing down…" message.
 - Prompts are shown in English and French together; there is no language setting.
 - The screen stays on during the session.
-- Nothing is stored and nothing leaves the phone; works offline.
+- One option, off unless ticked: a soft kalimba note at each change of phase (higher to
+  breathe in, the root to hold, lower to breathe out) and a crystal bell at the start and
+  the end, so the exercise can be done in the dark with the eyes closed.
+- Only that choice is kept on the phone; nothing leaves it; works offline.
 
 ## Install
 
@@ -55,3 +58,7 @@ Licence GPL-3.0-only, voir `LICENSE`.
 
 © 2026 Pierre Gallaz. Developed with [Claude Code](https://claude.com/claude-code) (Anthropic).
 GPL-3.0-only licence, see `LICENSE`.
+
+Sounds (CC0, from Freesound): kalimba note « G4 soft » by [hollandm](https://freesound.org/s/691805/),
+crystal bell by [arseniiv](https://freesound.org/s/614832/); the kalimba is lightly denoised and
+both are pitch-shifted for the three phases.

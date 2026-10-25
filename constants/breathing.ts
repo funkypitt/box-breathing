@@ -14,15 +14,18 @@ export const COLORS = {
 export const TOTAL_DURATION_MS = 4 * 60 * 1000; // 4 minutes
 export const HALFWAY_MS = 2 * 60 * 1000;
 
+export type PhaseKind = 'in' | 'hold' | 'out';
+
 export interface Phase {
+  kind: PhaseKind;
   en: string;
   fr: string;
   ms: number;
 }
 
-const IN = (s: number): Phase => ({ en: 'Breathe in', fr: 'Inspire', ms: s * 1000 });
-const HOLD = (s: number): Phase => ({ en: 'Hold', fr: 'Retiens', ms: s * 1000 });
-const OUT = (s: number): Phase => ({ en: 'Breathe out', fr: 'Expire', ms: s * 1000 });
+const IN = (s: number): Phase => ({ kind: 'in', en: 'Breathe in', fr: 'Inspire', ms: s * 1000 });
+const HOLD = (s: number): Phase => ({ kind: 'hold', en: 'Hold', fr: 'Retiens', ms: s * 1000 });
+const OUT = (s: number): Phase => ({ kind: 'out', en: 'Breathe out', fr: 'Expire', ms: s * 1000 });
 
 export interface Technique {
   id: string;

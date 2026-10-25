@@ -2,7 +2,7 @@
   "expo": {
     "name": "4 Minutes Breathing",
     "slug": "box-breathing",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -23,7 +23,7 @@
         "backgroundColor": "#0a0a1a"
       },
       "package": "com.freedomfighter.boxbreathing",
-      "versionCode": 5,
+      "versionCode": 6,
       "edgeToEdgeEnabled": true
     },
     "plugins": [
