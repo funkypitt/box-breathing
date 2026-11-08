@@ -45,9 +45,9 @@ npx expo prebuild --platform android --clean
 cd android && ./gradlew assembleRelease
 ```
 
-`prebuild --clean` regenerates `android/` and discards the settings that keep the APK
-at 25 MB (arm64 only, minify, shrink) and `local.properties`: reapply them from
-[docs/NOTES.md](docs/NOTES.md) before `assembleRelease`. `app.json` holds the version.
+`prebuild --clean` regenerates `android/`; the build settings (API 36, arm64 only, minify,
+shrink, blocked permissions) and the version live in `app.json`, so only
+`android/local.properties` (`sdk.dir=…`) has to be recreated, see [docs/NOTES.md](docs/NOTES.md).
 
 For iOS, see `DEPLOY.md` for the Codemagic pipeline.
 

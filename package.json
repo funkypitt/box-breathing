@@ -1,6 +1,6 @@
 {
   "name": "box-breathing",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
@@ -13,6 +13,7 @@
     "babel-preset-expo": "^55.0.15",
     "expo": "~54.0.33",
     "expo-audio": "~1.1.1",
+    "expo-build-properties": "~1.0.10",
     "expo-constants": "~18.0.13",
     "expo-keep-awake": "~15.0.8",
     "expo-linear-gradient": "~15.0.8",

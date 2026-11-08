@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -19,6 +20,7 @@ const ICON_SIZE = 52;
 
 export default function StartScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const screenOpacity = useSharedValue(1);
   const [technique, setTechnique] = useState(DEFAULT_TECHNIQUE);
   const [sounds, setSounds] = useState(false);
@@ -111,7 +113,7 @@ export default function StartScreen() {
             Sound at each phase · Son à chaque phase
           </Text>
         </Pressable>
-        <Text style={styles.credits}>Pierre Gallaz · developed with Claude Code</Text>
+        <Text style={[styles.credits, { bottom: 24 + insets.bottom }]}>Pierre Gallaz · developed with Claude Code</Text>
       </Animated.View>
     </LinearGradient>
   );
