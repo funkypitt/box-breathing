@@ -121,7 +121,7 @@ workflows:
     environment:
       vars:
         BUNDLE_IDS: "com.freedomfighter.boxbreathing com.local2p.games"
-        CERT_ID: "none"   # resource id of the distribution certificate expiring 2027-03-02 (see the listing step)
+        CERT_ID: "UV32QNP69H"   # "Apple Distribution: Pierre Gallaz", expires 2027-03-02 (from the listing step; "none" = list only)
     scripts:
       - name: Create the profiles
         script: |
