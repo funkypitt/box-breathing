@@ -50,7 +50,7 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        submit_to_testflight: true
+        submit_to_testflight: false  # upload only; TestFlight beta review needs test info in ASC
 
   ios-screenshots:
     name: iPhone screenshots (simulator)
