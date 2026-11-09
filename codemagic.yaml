@@ -105,3 +105,43 @@ workflows:
           ls -l screenshots/*/
     artifacts:
       - screenshots/**/*.png
+
+  # One-off helper: creates the App Store provisioning profiles at Apple for the bundle
+  # ids below, signed with the distribution certificate Codemagic already holds
+  # (the one expiring 2027-03-02). Codemagic's own "Fetch profiles" only imports
+  # profiles that exist, and the yaml `ios_signing` only uses imported ones, so a new
+  # bundle id needs this (or the developer portal) once. Then: Settings → Code signing
+  # identities → iOS provisioning profiles → Fetch profiles → tick the new ones.
+  apple-profiles:
+    name: "Apple: create App Store profiles"
+    max_build_duration: 10
+    instance_type: linux_x2
+    integrations:
+      app_store_connect: codemagic
+    environment:
+      vars:
+        BUNDLE_IDS: "com.freedomfighter.boxbreathing com.local2p.games"
+        CERT_EXPIRES: "2027-03-02"
+    scripts:
+      - name: Create the profiles
+        script: |
+          set -e
+          CERT_ID=$(app-store-connect list-certificates --json | python3 -c '
+          import json, sys, os
+          want = os.environ["CERT_EXPIRES"]
+          cs = [c for c in json.load(sys.stdin)
+                if c["attributes"]["certificateType"] in ("DISTRIBUTION", "IOS_DISTRIBUTION")
+                and c["attributes"]["expirationDate"].startswith(want)]
+          assert cs, "no distribution certificate expiring on " + want
+          print(cs[0]["id"])')
+          echo "certificate: $CERT_ID"
+          for B in $BUNDLE_IDS; do
+            BID=$(app-store-connect list-bundle-ids --bundle-id-identifier "$B" --platform IOS --json | python3 -c 'import json,sys; print(json.load(sys.stdin)[0]["id"])')
+            echo "$B → bundle id resource $BID"
+            app-store-connect create-profile \
+              --bundle-id-resource-id "$BID" \
+              --certificate-resource-ids "$CERT_ID" \
+              --type IOS_APP_STORE \
+              --name "$B app store" || echo "(profile for $B not created: it may already exist)"
+          done
+          app-store-connect list-profiles --type IOS_APP_STORE
