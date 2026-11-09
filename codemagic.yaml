@@ -137,10 +137,10 @@ workflows:
               BID=$(app-store-connect list-bundle-ids --bundle-id-identifier "$B" --platform IOS 2>/dev/null | sed -n 's/^Id: //p' | head -1)
               echo "$B → bundle id resource $BID"
               app-store-connect create-profile \
-                --bundle-id-resource-id "$BID" \
-                --certificate-resource-ids "$CERT_ID" \
+                --certificate-ids "$CERT_ID" \
                 --type IOS_APP_STORE \
-                --name "$B app store" || echo "(profile for $B not created: it may already exist)"
+                --name "$B app store" \
+                "$BID" || echo "(profile for $B not created: it may already exist)"
             done
           else
             echo "CERT_ID not set: listing only (set it in the workflow's vars from the listing above)"
