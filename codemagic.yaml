@@ -121,28 +121,27 @@ workflows:
     environment:
       vars:
         BUNDLE_IDS: "com.freedomfighter.boxbreathing com.local2p.games"
-        CERT_EXPIRES: "2027-03-02"
+        CERT_ID: ""   # resource id of the distribution certificate expiring 2027-03-02 (see the listing step)
     scripts:
       - name: Create the profiles
         script: |
           set -e
-          CERT_ID=$(app-store-connect list-certificates --json | python3 -c '
-          import json, sys, os
-          want = os.environ["CERT_EXPIRES"]
-          raw = sys.stdin.read()            # the CLI logs a "Found N ..." line before the JSON
-          cs = [c for c in json.loads(raw[raw.index("["):])
-                if c["attributes"]["certificateType"] in ("DISTRIBUTION", "IOS_DISTRIBUTION")
-                and c["attributes"]["expirationDate"].startswith(want)]
-          assert cs, "no distribution certificate expiring on " + want
-          print(cs[0]["id"])')
-          echo "certificate: $CERT_ID"
+          echo "=== certificates (text)"; app-store-connect list-certificates || true
+          echo "=== certificates (json)"; app-store-connect list-certificates --json || true
           for B in $BUNDLE_IDS; do
-            BID=$(app-store-connect list-bundle-ids --bundle-id-identifier "$B" --platform IOS --json | python3 -c 'import json,sys; r=sys.stdin.read(); print(json.loads(r[r.index("["):])[0]["id"])')
-            echo "$B → bundle id resource $BID"
-            app-store-connect create-profile \
-              --bundle-id-resource-id "$BID" \
-              --certificate-resource-ids "$CERT_ID" \
-              --type IOS_APP_STORE \
-              --name "$B app store" || echo "(profile for $B not created: it may already exist)"
+            echo "=== bundle id $B"; app-store-connect list-bundle-ids --bundle-id-identifier "$B" --platform IOS || true
           done
-          app-store-connect list-profiles --type IOS_APP_STORE
+          echo "=== existing App Store profiles"; app-store-connect list-profiles --type IOS_APP_STORE || true
+          if [ -n "$CERT_ID" ]; then
+            for B in $BUNDLE_IDS; do
+              BID=$(app-store-connect list-bundle-ids --bundle-id-identifier "$B" --platform IOS 2>/dev/null | sed -n 's/^Id: //p' | head -1)
+              echo "$B → bundle id resource $BID"
+              app-store-connect create-profile \
+                --bundle-id-resource-id "$BID" \
+                --certificate-resource-ids "$CERT_ID" \
+                --type IOS_APP_STORE \
+                --name "$B app store" || echo "(profile for $B not created: it may already exist)"
+            done
+          else
+            echo "CERT_ID not set: listing only (set it in the workflow's vars from the listing above)"
+          fi
