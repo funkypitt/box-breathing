@@ -129,14 +129,15 @@ workflows:
           CERT_ID=$(app-store-connect list-certificates --json | python3 -c '
           import json, sys, os
           want = os.environ["CERT_EXPIRES"]
-          cs = [c for c in json.load(sys.stdin)
+          raw = sys.stdin.read()            # the CLI logs a "Found N ..." line before the JSON
+          cs = [c for c in json.loads(raw[raw.index("["):])
                 if c["attributes"]["certificateType"] in ("DISTRIBUTION", "IOS_DISTRIBUTION")
                 and c["attributes"]["expirationDate"].startswith(want)]
           assert cs, "no distribution certificate expiring on " + want
           print(cs[0]["id"])')
           echo "certificate: $CERT_ID"
           for B in $BUNDLE_IDS; do
-            BID=$(app-store-connect list-bundle-ids --bundle-id-identifier "$B" --platform IOS --json | python3 -c 'import json,sys; print(json.load(sys.stdin)[0]["id"])')
+            BID=$(app-store-connect list-bundle-ids --bundle-id-identifier "$B" --platform IOS --json | python3 -c 'import json,sys; r=sys.stdin.read(); print(json.loads(r[r.index("["):])[0]["id"])')
             echo "$B → bundle id resource $BID"
             app-store-connect create-profile \
               --bundle-id-resource-id "$BID" \
