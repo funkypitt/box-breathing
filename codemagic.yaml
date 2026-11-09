@@ -121,7 +121,7 @@ workflows:
     environment:
       vars:
         BUNDLE_IDS: "com.freedomfighter.boxbreathing com.local2p.games"
-        CERT_ID: ""   # resource id of the distribution certificate expiring 2027-03-02 (see the listing step)
+        CERT_ID: "none"   # resource id of the distribution certificate expiring 2027-03-02 (see the listing step)
     scripts:
       - name: Create the profiles
         script: |
@@ -132,7 +132,7 @@ workflows:
             echo "=== bundle id $B"; app-store-connect list-bundle-ids --bundle-id-identifier "$B" --platform IOS || true
           done
           echo "=== existing App Store profiles"; app-store-connect list-profiles --type IOS_APP_STORE || true
-          if [ -n "$CERT_ID" ]; then
+          if [ "$CERT_ID" != none ]; then
             for B in $BUNDLE_IDS; do
               BID=$(app-store-connect list-bundle-ids --bundle-id-identifier "$B" --platform IOS 2>/dev/null | sed -n 's/^Id: //p' | head -1)
               echo "$B → bundle id resource $BID"
