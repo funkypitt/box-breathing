@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Pressable, Platform, Settings } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter, useRootNavigationState } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
   useSharedValue,
@@ -33,36 +33,27 @@ export default function StartScreen() {
     });
   }, []);
 
-  // Store screenshots on the simulator: the scene comes either from launch arguments
-  // (`simctl launch … -screenshotScene box -screenshotSounds 1`, read through NSUserDefaults)
-  // or from two AsyncStorage keys seeded in the app's container; the session then starts at once.
-  const navReady = !!useRootNavigationState()?.key;
+  // Store screenshots on the simulator: two AsyncStorage keys seeded in the app's data
+  // container (see codemagic.yaml, workflow ios-screenshots) start the session at once.
   useEffect(() => {
-    if (Platform.OS !== 'ios' || !navReady) return;
-    let cancelled = false;
-    (async () => {
+    if (Platform.OS !== 'ios') return;
+    let tries = 0;
+    const go = async () => {
       try {
-        let scene: unknown = Settings.get('screenshotScene');
-        let withSounds: unknown = Settings.get('screenshotSounds');
-        if (typeof scene !== 'string' || !scene) {
-          scene = await AsyncStorage.getItem('screenshotScene');
-          withSounds = await AsyncStorage.getItem('screenshotSounds');
-          if (scene) await AsyncStorage.multiRemove(['screenshotScene', 'screenshotSounds']);
-        }
-        if (!cancelled && typeof scene === 'string' && scene) {
-          router.replace({
-            pathname: '/breathing',
-            params: { technique: scene, sounds: String(withSounds) === '1' ? '1' : '0' },
-          });
-        }
+        const scene = await AsyncStorage.getItem('screenshotScene');
+        if (!scene) return;
+        const withSounds = await AsyncStorage.getItem('screenshotSounds');
+        router.replace({
+          pathname: '/breathing',
+          params: { technique: scene, sounds: withSounds === '1' ? '1' : '0' },
+        });
+        await AsyncStorage.multiRemove(['screenshotScene', 'screenshotSounds']);
       } catch {
-        // not a screenshot run
+        if (++tries < 10) setTimeout(go, 500); // the router may not be ready yet
       }
-    })();
-    return () => {
-      cancelled = true;
     };
-  }, [navReady]);
+    go();
+  }, []);
 
   // The tick plays its own note once, so the volume can be judged before starting.
   const toggleSounds = () => {

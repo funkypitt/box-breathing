@@ -98,7 +98,7 @@ workflows:
             xcrun simctl terminate "$UDID" "$BUNDLE" 2>/dev/null || true
             if [ -n "$2" ]; then
               seed "$2" "$3"
-              xcrun simctl launch "$UDID" "$BUNDLE" -screenshotScene "$2" -screenshotSounds "$3"
+              xcrun simctl launch "$UDID" "$BUNDLE"
             else
               xcrun simctl launch "$UDID" "$BUNDLE"
             fi
