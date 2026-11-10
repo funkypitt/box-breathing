@@ -73,7 +73,7 @@ workflows:
             -destination "generic/platform=iOS Simulator" \
             -derivedDataPath build/sim CODE_SIGNING_ALLOWED=NO build | xcpretty || true
           ls build/sim/Build/Products/Release-iphonesimulator/*.app
-      - name: Boot the simulator and take the screenshots (English, then French)
+      - name: Boot the simulator and take the screenshots
         script: |
           set -e
           APP=$(ls -d build/sim/Build/Products/Release-iphonesimulator/*.app | head -1)
@@ -83,28 +83,30 @@ workflows:
           xcrun simctl bootstatus "$UDID" -b
           xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
           xcrun simctl ui "$UDID" appearance dark
-          shoot() {  # shoot LANG NAME [URL]
-            mkdir -p "screenshots/$1"
+          xcrun simctl install "$UDID" "$APP"
+          mkdir -p screenshots
+          # The texts are bilingual on screen (EN / FR), so one set serves both locales.
+          # Deep links (simctl openurl) would raise the "Open in …?" confirmation, so the
+          # scene is passed as launch arguments, read by the app through NSUserDefaults.
+          shoot() {  # shoot NAME [SCENE SOUNDS [SECONDS]]
             xcrun simctl terminate "$UDID" "$BUNDLE" 2>/dev/null || true
-            if [ -n "$3" ]; then xcrun simctl openurl "$UDID" "$3"; else xcrun simctl launch "$UDID" "$BUNDLE"; fi
+            if [ -n "$2" ]; then
+              xcrun simctl launch "$UDID" "$BUNDLE" -screenshotScene "$2" -screenshotSounds "$3"
+            else
+              xcrun simctl launch "$UDID" "$BUNDLE"
+            fi
             sleep "${4:-6}"
-            xcrun simctl io "$UDID" screenshot "screenshots/$1/$2.png"
+            xcrun simctl io "$UDID" screenshot "screenshots/$1.png"
           }
-          for LANG in en fr; do
-            xcrun simctl spawn "$UDID" defaults write -g AppleLanguages -array "$LANG"
-            xcrun simctl spawn "$UDID" defaults write -g AppleLocale "${LANG}_$( [ $LANG = en ] && echo US || echo FR )"
-            xcrun simctl uninstall "$UDID" "$BUNDLE" 2>/dev/null || true
-            xcrun simctl install "$UDID" "$APP"
-            shoot $LANG 01-home
-            shoot $LANG 02-box      "box-breathing://breathing?technique=box&sounds=1"      14
-            shoot $LANG 03-478      "box-breathing://breathing?technique=478&sounds=1"      9
-            shoot $LANG 04-petal    "box-breathing://breathing?technique=petal&sounds=0"    7
-            shoot $LANG 05-coherent "box-breathing://breathing?technique=coherent&sounds=0" 8
-          done
+          shoot 01-home
+          shoot 02-box      box      1 14
+          shoot 03-478      478      1 9
+          shoot 04-petal    petal    0 7
+          shoot 05-coherent coherent 0 8
           xcrun simctl shutdown "$UDID"
-          ls -l screenshots/*/
+          ls -l screenshots/
     artifacts:
-      - screenshots/**/*.png
+      - screenshots/*.png
 
   # One-off helper: creates the App Store provisioning profiles at Apple for the bundle
   # ids below, signed with the distribution certificate Codemagic already holds

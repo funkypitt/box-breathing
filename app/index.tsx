@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Platform, Settings } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -30,6 +30,19 @@ export default function StartScreen() {
       setSounds(on);
       if (on) prepareSounds();
     });
+  }, []);
+
+  // Store screenshots on the simulator: `simctl launch … -screenshotScene box -screenshotSounds 1`
+  // puts these two keys in NSUserDefaults (launch arguments), and the session starts at once.
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    const scene = Settings.get('screenshotScene');
+    if (typeof scene === 'string' && scene) {
+      router.replace({
+        pathname: '/breathing',
+        params: { technique: scene, sounds: Settings.get('screenshotSounds') === '1' ? '1' : '0' },
+      });
+    }
   }, []);
 
   // The tick plays its own note once, so the volume can be judged before starting.
