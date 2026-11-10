@@ -84,6 +84,7 @@ workflows:
           xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
           xcrun simctl ui "$UDID" appearance dark
           xcrun simctl install "$UDID" "$APP"
+          sleep 120  # the "Ready for Apple Intelligence" banner shows up ~90 s after boot; let it pass
           mkdir -p screenshots
           # The texts are bilingual on screen (EN / FR), so one set serves both locales.
           # Deep links (simctl openurl) would raise the "Open in …?" confirmation, so the
