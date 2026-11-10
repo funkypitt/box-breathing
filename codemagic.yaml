@@ -88,14 +88,22 @@ workflows:
           # The texts are bilingual on screen (EN / FR), so one set serves both locales.
           # Deep links (simctl openurl) would raise the "Open in …?" confirmation, so the
           # scene is passed as launch arguments, read by the app through NSUserDefaults.
+          seed() {  # seed SCENE SOUNDS — AsyncStorage keys in the app's data container
+            C=$(xcrun simctl get_app_container "$UDID" "$BUNDLE" data)
+            S="$C/Library/Application Support/$BUNDLE/RCTAsyncLocalStorage_V1"
+            mkdir -p "$S"
+            printf '{"screenshotScene":"%s","screenshotSounds":"%s","sounds":"%s"}' "$1" "$2" "$2" > "$S/manifest.json"
+          }
           shoot() {  # shoot NAME [SCENE SOUNDS [SECONDS]]
             xcrun simctl terminate "$UDID" "$BUNDLE" 2>/dev/null || true
             if [ -n "$2" ]; then
+              seed "$2" "$3"
               xcrun simctl launch "$UDID" "$BUNDLE" -screenshotScene "$2" -screenshotSounds "$3"
             else
               xcrun simctl launch "$UDID" "$BUNDLE"
             fi
             sleep "${4:-6}"
+            xcrun simctl spawn "$UDID" launchctl list 2>/dev/null | grep -q "$BUNDLE" || echo "!! $1: the app is not running any more"
             xcrun simctl io "$UDID" screenshot "screenshots/$1.png"
           }
           shoot 01-home
@@ -103,10 +111,15 @@ workflows:
           shoot 03-478      478      1 9
           shoot 04-petal    petal    0 7
           shoot 05-coherent coherent 0 8
+          mkdir -p crashes
+          cp ~/Library/Logs/DiagnosticReports/*4Minutes* crashes/ 2>/dev/null || true
+          for f in crashes/*; do [ -f "$f" ] && { echo "== $f"; grep -o '"exception"[^}]*}' "$f" | head -3; grep -o '"termination"[^}]*}' "$f" | head -1; }; done
+          xcrun simctl spawn "$UDID" log show --last 3m --style compact --predicate 'processImagePath contains "4MinutesBreathing" AND (messageType == error OR messageType == fault)' 2>/dev/null | tail -40 || true
           xcrun simctl shutdown "$UDID"
           ls -l screenshots/
     artifacts:
       - screenshots/*.png
+      - crashes/*
 
   # One-off helper: creates the App Store provisioning profiles at Apple for the bundle
   # ids below, signed with the distribution certificate Codemagic already holds
