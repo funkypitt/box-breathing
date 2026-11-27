@@ -1,4 +1,4 @@
-# App Review Notes - 4 Minutes Breathing 2.2.0 (7)
+# App Review Notes - 4 Minutes Breathing 2.2.1 (8)
 
 ## Purpose and audience
 4 Minutes Breathing is a simple general-wellbeing app for adults who want a short, guided breathing break. The user picks one of five classic paced-breathing patterns and follows a dot moving around a shape for four minutes. It is NOT a medical device: it makes no diagnosis, treatment or therapeutic claim, measures nothing about the body and collects no health data. The techniques are traditional, public-domain breathing patterns (box breathing, Dr Andrew Weil's 4-7-8 breath, coherent breathing / "cardiac coherence", a 3-3-6 long exhale, a 4-4-4 triangle); the app only times them.
@@ -9,7 +9,8 @@
 3. Optional: tick "Sound at each phase" to hear a soft note at each phase change (a sample note plays when ticked). The setting is remembered on the device.
 4. Tap the pulsing button: the session starts. A dot travels around the shape; prompts read "Breathe in / Hold / Breathe out" (English and French). The screen stays awake.
 5. Box breathing only: at the 2-minute mark "Slowing down..." appears and the pace goes from 3 s to 4 s.
-6. After about four minutes (always ending on a complete breath) "Well done! / Bravo !" appears and the app returns to the start screen automatically.
+6. To end a session early, tap "Stop · Arrêter" at the bottom of the screen: the app returns to the start screen.
+7. After about four minutes (always ending on a complete breath) "Well done! / Bravo !" appears and the app returns to the start screen automatically.
 There are no other screens, no in-app purchases, no ads and no external links.
 
 ## External services

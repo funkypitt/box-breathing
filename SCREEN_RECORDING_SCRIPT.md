@@ -1,7 +1,7 @@
 # Script de l'enregistrement d'écran pour Apple (60–90 s)
 
 ## Avant de filmer
-- iPhone physique, iOS à jour, build 2.2.0 (7) installé via TestFlight.
+- iPhone physique, iOS à jour, build 2.2.1 (8) installé via TestFlight.
 - Ajouter « Enregistrement de l'écran » au Centre de contrôle : Réglages → Centre de contrôle.
 - Mode Ne pas déranger activé (pas de notification dans la vidéo), batterie et heure visibles, son du téléphone audible.
 - Fermer complètement l'app (balayer vers le haut dans le sélecteur d'apps) pour que la vidéo montre un vrai lancement.
@@ -15,9 +15,10 @@
 | 30–37 s | Case « Sound at each phase » | Cocher la case : une note d'essai retentit. |
 | 37–42 s | Bouton pulsant | Toucher le bouton : fondu vers la séance. |
 | 42–80 s | Séance de respiration | Laisser tourner : le point suit le carré, « Breathe in / Hold / Breathe out » et les notes de kalimba à chaque phase. |
-| 80–90 s | — | Arrêter l'enregistrement (barre rouge / Centre de contrôle). |
+| 80–85 s | Bouton « Stop · Arrêter » | Toucher le bouton : retour à l'écran de départ. |
+| 85–90 s | — | Arrêter l'enregistrement (barre rouge / Centre de contrôle). |
 
-La séance dure 4 minutes et ne peut pas être interrompue : la fin (« Slowing down… » à 2 min, puis « Well done! / Bravo ! » et le retour automatique à l'accueil) est décrite dans les notes. Si tu préfères la montrer, laisse tourner l'enregistrement environ 5 minutes : Apple accepte une vidéo plus longue.
+La séance dure 4 minutes ; le bouton « Stop · Arrêter » en bas de l'écran l'interrompt et ramène à l'accueil (on peut le montrer pour finir la vidéo). La fin (« Slowing down… » à 2 min, puis « Well done! / Bravo ! » et le retour automatique à l'accueil) est décrite dans les notes. Si tu préfères la montrer, laisse tourner l'enregistrement environ 5 minutes : Apple accepte une vidéo plus longue.
 
 ## Conseils
 - Ne pas couper ni monter la vidéo : un seul plan continu, depuis l'écran d'accueil.
