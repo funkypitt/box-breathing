@@ -46,3 +46,14 @@ export function playCue(cue: Cue): void {
     }
   });
 }
+
+// The session was stopped by hand: nothing keeps ringing on the home screen.
+export function silenceSounds(): void {
+  for (const player of Object.values(players)) {
+    try {
+      player?.pause();
+    } catch {
+      // nothing was playing
+    }
+  }
+}

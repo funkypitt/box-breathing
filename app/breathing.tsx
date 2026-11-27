@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Pressable, BackHandler } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useKeepAwake } from 'expo-keep-awake';
@@ -13,7 +14,7 @@ import Animated, {
 import BreathingShape from '../components/BreathingShape';
 import Timer from '../components/Timer';
 import { COLORS, findTechnique, buildSchedule, Schedule } from '../constants/breathing';
-import { playCue, prepareSounds } from '../constants/sounds';
+import { playCue, prepareSounds, silenceSounds } from '../constants/sounds';
 
 // Compute breathing state from elapsed time
 function getBreathingState(schedule: Schedule, elapsedMs: number) {
@@ -47,6 +48,8 @@ export default function BreathingScreen() {
   const startTime = useRef(Date.now());
   const rafRef = useRef<number | null>(null);
   const lastSegment = useRef(0);
+  const insets = useSafeAreaInsets();
+  const stopped = useRef(false);
 
   const [elapsed, setElapsed] = useState(0);
   const [finished, setFinished] = useState(false);
@@ -66,7 +69,7 @@ export default function BreathingScreen() {
   useEffect(() => {
     let running = true;
     const tick = () => {
-      if (!running) return;
+      if (!running || stopped.current) return;
       const now = Date.now();
       const ms = now - startTime.current;
       if (ms >= schedule.totalMs) {
@@ -114,6 +117,26 @@ export default function BreathingScreen() {
   const goHome = useCallback(() => {
     router.replace('/');
   }, [router]);
+
+  // Stop before the end: the button at the bottom of the screen (an iPhone has no back
+  // button), and the back button or gesture on Android. A short fade, then the home screen.
+  const stop = useCallback(() => {
+    if (stopped.current) return;
+    stopped.current = true;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    silenceSounds();
+    screenOpacity.value = withTiming(0, { duration: 300, easing: Easing.out(Easing.ease) }, (done) => {
+      if (done) runOnJS(goHome)();
+    });
+  }, [goHome]);
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      stop();
+      return true;
+    });
+    return () => sub.remove();
+  }, [stop]);
 
   useEffect(() => {
     if (!finished) return;
@@ -177,6 +200,18 @@ export default function BreathingScreen() {
           <Text style={styles.transitionFr}>On ralentit…</Text>
         </Animated.View>
 
+        {!finished && (
+          <Pressable
+            onPress={stop}
+            style={[styles.stop, { bottom: 20 + insets.bottom }]}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Stop / Arrêter"
+          >
+            <Text style={styles.stopText}>Stop · Arrêter</Text>
+          </Pressable>
+        )}
+
         {/* End text */}
         {finished && (
           <Animated.View style={[styles.endContainer, endFadeStyle]}>
@@ -201,9 +236,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  stop: {
+    position: 'absolute',
+    paddingVertical: 10,
+    paddingHorizontal: 22,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: COLORS.borderPurple,
+  },
+  stopText: {
+    color: COLORS.text,
+    opacity: 0.6,
+    fontSize: 14,
+    fontWeight: '300',
+  },
   transitionMsg: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 110,
     alignItems: 'center',
   },
   transitionEn: {
