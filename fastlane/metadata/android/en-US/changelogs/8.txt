@@ -1,0 +1,1 @@
+A Stop button ends a session before the four minutes are over.

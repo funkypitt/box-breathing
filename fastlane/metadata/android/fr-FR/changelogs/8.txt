@@ -1,0 +1,1 @@
+Un bouton Stop arrête la séance avant la fin des quatre minutes.
